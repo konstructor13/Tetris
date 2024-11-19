@@ -15,6 +15,9 @@ namespace Tetris
             Point p2 = new Point(4, 5, '#');
             p2.Draw();
 
+            Square s1 = new Square(7, 4, '#');
+            s1.Draw();
+
             Console.ReadKey();
         }
     }
