@@ -9,14 +9,14 @@ namespace Tetris
             Console.SetWindowSize(40, 30);
             Console.SetBufferSize(40, 30);
 
-            Figure[] figures = new Figure[2];
-            figures[0] = new Square(2, 5, '#');
-            figures[1] = new Stick(6, 6, '#');
+            Figure stick = new Stick(20, 5, '#');
 
-            foreach (Figure f in figures)
-            {
-                f.Draw();
-            }
+            stick.Draw();
+            Thread.Sleep(500);
+
+            stick.Clear();
+            stick.Rotate();
+            stick.Draw();
 
             Console.ReadKey();
         }

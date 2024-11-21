@@ -17,5 +17,27 @@ namespace Tetris
             points[3] = new Point(x, y + 3, c);
         }
 
+        public override void Rotate()
+        {
+            if (points[0].x == points[1].x)
+            {
+                //Rotate Horizontal
+                for (int i = 0; i < points.Length; i++)
+                {
+                    points[i].y = points[0].y;
+                    points[i].x = points[0].x + i;
+                }
+            }
+            else
+            {
+                //Rotate Vertical
+                for (int i = 0; i < points.Length; i++)
+                {
+                    points[i].x = points[0].x;
+                    points[i].y = points[0].y + i;
+                }
+            }
+        }
+
     }
 }
