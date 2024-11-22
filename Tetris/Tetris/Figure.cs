@@ -22,18 +22,69 @@ namespace Tetris
         {
             foreach (Point p in points)
             {
-                p.Hide();
+                p.Clear();
             }
         }
 
-        public void Move(Direction dir)
+        /*public void Move(Direction dir)
         {
+            Clear();
             foreach (Point p in points)
+            {
+                p.Move(dir);
+            }
+            Draw();
+        }*/
+
+        public void Move(Point[] pList, Direction dir)
+        {
+            foreach(Point p in pList)
             {
                 p.Move(dir);
             }
         }
 
-        public abstract void Rotate();
+        public void TryMove(Direction dir)
+        {
+            Clear();
+
+            Point[] clone = Clone();
+            Move(clone, dir);
+            if (VerifyPosition(clone))
+                points = clone;
+
+            Draw();
+        }
+
+        private bool VerifyPosition(Point[] pList)
+        {
+            foreach (Point p in pList)
+            {
+                if (p.x < 0 || p.y < 0 || p.x >= PlayGround.WIDTH || p.y >= PlayGround.HEIGHT)
+                    return false;
+            }
+            return true;
+        }
+
+        private Point[] Clone()
+        {
+            Point[] newPoints = new Point[points.Length];
+            for (int i = 0; i < points.Length; i++)
+            {
+                newPoints[i] = new Point(points[i]);
+            }
+            return newPoints;
+        }
+
+        public abstract void Rotate(Point[] pList);
+        public void TryRotate()
+        {
+            Clear();
+            Point[] clone = Clone();
+            Rotate(clone);
+            if (VerifyPosition(clone))
+                points = clone;
+            Draw();
+        }
     }
 }
