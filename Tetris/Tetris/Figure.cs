@@ -8,11 +8,11 @@ namespace Tetris
 {
     public abstract class Figure
     {
-        protected Point[] points = new Point[4];
+        public Point[] Points = new Point[4];
 
         public void Draw()
         {
-            foreach (Point p in points)
+            foreach (Point p in Points)
             {
                 p.Draw();
             }
@@ -20,21 +20,11 @@ namespace Tetris
 
         public void Clear()
         {
-            foreach (Point p in points)
+            foreach (Point p in Points)
             {
                 p.Clear();
             }
         }
-
-        /*public void Move(Direction dir)
-        {
-            Clear();
-            foreach (Point p in points)
-            {
-                p.Move(dir);
-            }
-            Draw();
-        }*/
 
         public void Move(Point[] pList, Direction dir)
         {
@@ -44,47 +34,60 @@ namespace Tetris
             }
         }
 
-        public void TryMove(Direction dir)
+        public StrikeStatus TryMove(Direction dir)
         {
             Clear();
 
             Point[] clone = Clone();
             Move(clone, dir);
-            if (VerifyPosition(clone))
-                points = clone;
+
+            var result = VerifyPosition(clone);
+            if (result == StrikeStatus.SUCCESS)
+                Points = clone;
 
             Draw();
+
+            return result;
         }
 
-        private bool VerifyPosition(Point[] pList)
+        private StrikeStatus VerifyPosition(Point[] pList) 
         {
             foreach (Point p in pList)
             {
-                if (p.x < 0 || p.y < 0 || p.x >= PlayGround.WIDTH || p.y >= PlayGround.HEIGHT)
-                    return false;
+                if (p.Y >= PlayGround.Height)
+                    return StrikeStatus.DOWN_BORDER_STRIKE;
+                if (p.X >= PlayGround.Width || p.X < 0 || p.Y < 0)
+                    return StrikeStatus.BORDER_STRIKE;
+                if (PlayGround.CheckStrike(p))
+                    return StrikeStatus.HEAP_STRIKE;
             }
-            return true;
+            return StrikeStatus.SUCCESS;
         }
 
         private Point[] Clone()
         {
-            Point[] newPoints = new Point[points.Length];
-            for (int i = 0; i < points.Length; i++)
+            Point[] newPoints = new Point[Points.Length];
+            for (int i = 0; i < Points.Length; i++)
             {
-                newPoints[i] = new Point(points[i]);
+                newPoints[i] = new Point(Points[i]);
             }
             return newPoints;
         }
 
         public abstract void Rotate(Point[] pList);
-        public void TryRotate()
+        public StrikeStatus TryRotate()
         {
             Clear();
             Point[] clone = Clone();
             Rotate(clone);
-            if (VerifyPosition(clone))
-                points = clone;
+
+            var result = VerifyPosition(clone);
+            if (result == StrikeStatus.SUCCESS)
+                Points = clone;
+
             Draw();
+
+            return result;
         }
     }
 }
